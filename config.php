@@ -8,11 +8,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Database configuration constants
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'employee_leave_db');
+// Database configuration constants (supports local server and environment-based deployments like Railway)
+define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
+define('DB_USER', getenv('MYSQLUSER') ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD') !== false ? getenv('MYSQLPASSWORD') : '');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'employee_leave_db');
 
 $db = null;
 $demo_mode = false;
