@@ -24,6 +24,17 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
+
+    // Auto-installer: Check if the users table exists. If not, auto-import schema.sql
+    // This makes cloud deployments (like Railway) 100% zero-configuration!
+    $tableCheck = $db->query("SHOW TABLES LIKE 'users'");
+    if ($tableCheck->rowCount() === 0) {
+        $schemaFile = __DIR__ . '/schema.sql';
+        if (file_exists($schemaFile)) {
+            $sql = file_get_contents($schemaFile);
+            $db->exec($sql);
+        }
+    }
 } catch (PDOException $e) {
     // If the database connection fails, fall back to Session-based Demo Mode
     $demo_mode = true;
